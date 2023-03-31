@@ -18,6 +18,10 @@ int question;
 map<string, vector<string>> attr_vals;
 map<string, string> mq;
 
+double entropy(double pos, double neg);
+double gain(vector<pair<int, int>> v, int sum_pos, int sum_neg);
+pair<int, int> pure(vvs table, string attr, string value);
+
 struct node
 {
     string label;
@@ -264,8 +268,9 @@ int DecisionTree(ll k)
     //vvs DATA(15);
     if (k == 0)
     {
-        ll n, m;
-    cin >> n >> m;
+    ll n, m;
+    cin >> n;
+    cin >> m;
     
     for (int i = 0; i < n; i++)
     {

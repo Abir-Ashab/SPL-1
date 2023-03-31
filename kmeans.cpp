@@ -1,43 +1,60 @@
 #include <iostream>
 #include <vector>
-#include <map>
-#include <algorithm>
-#include<bits/stdc++.h>
+#include <math.h>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <random>
+#include <bits/stdc++.h>
+typedef long long ll;
+
 using namespace std;
 
-struct DataPoint 
+double euclideanDistance(DataPoint a, DataPoint b);
+void kMeans(vector<DataPoint> data, int k);
+
+struct DataPoint
 {
     double x, y;
 };
 
-double euclideanDistance(DataPoint a, DataPoint b) 
+double euclideanDistance(DataPoint a, DataPoint b)
 {
-    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+    double ret;
+
+    double first = pow(a.x - b.x, 2);
+
+    double second = pow(a.y - b.y, 2);
+
+    ret = sqrt(first + second);
+
+    return ret;
 }
 
-void kMeans(vector<DataPoint> data, int k) 
+void kMeans(vector<DataPoint> data, int k)
 {
 
     vector<DataPoint> centroids(k);
 
-    for (int i = 0; i < k; i++) 
+    for (int i = 0; i < k; i++)
     {
         centroids[i] = data[rand() % data.size()];
     }
-    
+
     vector<vector<DataPoint>> clusters(k);
-    
-    while (true) {
-        for (DataPoint point : data) 
+
+    while (true)
+    {
+        for (DataPoint point : data)
         {
             double minDistance = DBL_MAX;
             int nearestCentroid = 0;
-            for (int i = 0; i < k; i++) 
+            for (int i = 0; i < k; i++)
             {
 
                 double distance = euclideanDistance(point, centroids[i]);
 
-                if (distance < minDistance) 
+                if (distance < minDistance)
                 {
                     minDistance = distance;
                     nearestCentroid = i;
@@ -46,11 +63,14 @@ void kMeans(vector<DataPoint> data, int k)
             clusters[nearestCentroid].push_back(point);
         }
 
-        bool converged = true;
-        for (int i = 0; i < k; i++) 
+        bool converged = true;\
+
+        for (int i = 0; i < k; i++)
         {
-            DataPoint newCentroid = {0, 0};
-            for (DataPoint point : clusters[i]) 
+
+            DataPoint newCentroid = {0, 0};\
+
+            for (DataPoint point : clusters[i])
             {
 
                 newCentroid.x += point.x;
@@ -66,24 +86,29 @@ void kMeans(vector<DataPoint> data, int k)
                 centroids[i] = newCentroid;
             }
         }
-        if (converged) 
+        if (converged)
         {
             break;
         }
+
+        return;
     }
 
-    for (int i = 0; i < k; i++) 
+    for (int i = 0; i < k; i++)
     {
         int j = 1;
-        cout << "Cluster " << i + 1 << ":" << endl;
-        for (DataPoint point : clusters[i]) 
+
+        cout << "Cluster ";
+        cout << i + 1 << ":" << endl;
+
+        for (DataPoint point : clusters[i])
         {
             cout << "(" << point.x << ", " << point.y << ")" << endl;
-            if(j == clusters[i].size()/2)
+            if (j == clusters[i].size() / 2)
             {
                 break;
             }
-            else 
+            else
             {
                 j++;
             }
@@ -91,26 +116,28 @@ void kMeans(vector<DataPoint> data, int k)
     }
 }
 
-int main() 
+int main()
 {
     vector<DataPoint> data;
-    
+
     cout << "Enter number of points : ";
-    int n; cin >> n;
-    
-    for(int i = 0; i < n; ++i) 
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; ++i)
     {
         double a, b;
         int s;
-		cout << "\nEnter x" << i + 1 << " : ";
+        cout << "\nEnter x" << i + 1 << " : ";
         cin >> a;
 
-		cout << "\nEnter y" << i + 1 << " : ";
-		cin >> b;
-		
-        data.push_back({a,b});
+        cout << "\nEnter y" << i + 1 << " : ";
+        cin >> b;
+
+        data.push_back({a, b});
     }
     cout << '\n';
+
     int k = 3;
     kMeans(data, k);
     return 0;
