@@ -1,4 +1,8 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include<bits/stdc++.h>
 using namespace std;
 
 struct Point
@@ -12,9 +16,12 @@ struct Point
 void Sort(Point arr[], int n)
 {
     int i, j;
-    for (i = 0; i < n; i++) {
-		for (j = i + 1; j < n ; j++) {
-            if (arr[j].distance < arr[i].distance) {
+    for (i = 0; i < n; i++) 
+	{
+		for (j = i + 1; j < n ; j++) 
+		{
+            if (arr[j].distance < arr[i].distance) 
+			{
                 Point temp = arr[i];
 				arr[i] = arr[j];
 				arr[j] = temp;
@@ -23,9 +30,11 @@ void Sort(Point arr[], int n)
 	}
 }
 
-int KNN(Point arr[], int n, int k, Point p) {
+int KNN(Point arr[], int n, int k, Point p) 
+{
 
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) 
+	{
 		double q1 = (arr[i].x - p.x) * (arr[i].x - p.x);
 		double q2 = (arr[i].y - p.y) * (arr[i].y - p.y);
 
@@ -33,8 +42,9 @@ int KNN(Point arr[], int n, int k, Point p) {
 	}
 
 	Sort(arr, n);
-    for(int i = 0; i < n; ++i) {
-		cout << arr[i].distance << '\n';
+    for(int i = 0; i < n; ++i) 
+	{
+		//cout << arr[i].distance << '\n';
 	}
 	int freq1 = 0;	 
 	int freq2 = 0;	
@@ -61,7 +71,8 @@ int main() {
 	cin >> n; 
 	Point arr[n];
 
-	for(int i = 0; i < n; ++i) {
+	for(int i = 0; i < n; ++i) 
+	{
         double a, b;
         int s;
 		cout << "\nEnter x" << i + 1 << " : ";
@@ -79,7 +90,7 @@ int main() {
     }
 
 	Point p;
-	cout << "\nEnter point which you want to check : ";
+	cout << "\nEnter point which you want to check : \n";
 	cin >> p.x >> p.y;
 
 	int k = 3;
