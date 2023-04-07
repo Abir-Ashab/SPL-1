@@ -246,12 +246,12 @@ int decision_function(node *n, map<string, string> mq)
     }
     else if (n->child.find(val) == n->child.end())
     {
-        return 0;
+        return -1;
     }
     decision_function(n->child[val], mq);
 }
 
-int DecisionTree(ll k)
+int DecisionTree()
 {
 
     ios_base::sync_with_stdio(0);
@@ -265,100 +265,96 @@ int DecisionTree(ll k)
     //      << "  Humidity"
     //      << "  Wind"
     //      << " Play Tennis\n";
-    //vvs DATA(15);
-    if (k == 0)
-    {
-    ll n, m;
-    cin >> n;
-    cin >> m;
-    
+    // vvs DATA(15);
+    // n, m;
+    // cin >> n;
+    // cin >> m;
+
+    // for (int i = 0; i < n; i++)
+    // {
+    //     for (int j = 0; j < m; j++)
+    //     {
+    //         string s;
+    //         cin >> s;
+    //         DATA[i].push_back(s);
+    //     }
+    // }
+
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
-            string s;
-            cin >> s;
-            DATA[i].push_back(s);
+            cout << DATA[i][j] << "       ";
         }
+        cout << '\n';
     }
-
-    // for (int i = 1 + k; i < n; i++)
-    // {
-    //     for (int j = 0; j < m; j++)
-    //     {
-    //         cout << DATA[i][j] << "       ";
-    //     }
-    //     cout << '\n';
-    // }
     /// initial attr_vals;
-    for (int j = k; j < m - 1; j++)
-    {
-        map<string, bool> mp;
-        for (int i = 1; i < n; i++)
-        {
-            if (!mp[DATA[i][j]])
-            {
-                mp[DATA[i][j]] = 1;
-                attr_vals[DATA[0][j]].push_back(DATA[i][j]);
-            }
-        }
-    }
+    // for (int j = 0; j < m - 1; j++)
+    // {
+    //     map<string, bool> mp;
+    //     for (int i = 1; i < n; i++)
+    //     {
+    //         if (!mp[DATA[i][j]])
+    //         {
+    //             mp[DATA[i][j]] = 1;
+    //             attr_vals[DATA[0][j]].push_back(DATA[i][j]);
+    //         }
+    //     }
+    // }
 
-    node *root = new node();
-    func(root, DATA);
-    int question;
-    cin >> question;
+    // node *root = new node();
+    // func(root, DATA);
+    // int question;
+    // cin >> question;
 
-    for (int i = 0; i < question; i++)
-    {
-        cout << "\n\nFor the following data : ";
-        map<string, string> mq;
-        for (int j = 0; j < m - 1; j++)
-        {
-            string s;
-            cin >> s;
-            //cout << s << "  ";
-            mq[DATA[0][j]] = s;
-        }
-        //cout << "\n\nMy decision is : ";
-        if(decision_function(root, mq)) return 1;
-        return 0;
-    }
-    }
-    else
-    {
-        vvs DATA;
-        attr_vals.clear();
-        for (int j = k; j < m - 1; j++)
-        {
-            map<string, bool> mp;
-            for (int i = 1; i < n; i++)
-            {
-                if (!mp[DATA[i][j]])
-                {
-                    mp[DATA[i][j]] = 1;
-                    attr_vals[DATA[0][j]].push_back(DATA[i][j]);
-                }
-            }
-        }
-        node *root = new node();
-        func(root, DATA);
+    // for (int i = 0; i < question; i++)
+    // {
+    //     cout << "\n\nFor the following data : ";
+    //     map<string, string> mq;
+    //     for (int j = 0; j < m - 1; j++)
+    //     {
+    //         string s;
+    //         cin >> s;
+    //         // cout << s << "  ";
+    //         mq[DATA[0][j]] = s;
+    //     }
+    //     // cout << "\n\nMy decision is : ";
+    //     if (decision_function(root, mq))
+    //         return 1;
+    //     return 0;
+    // }
 
-        if (decision_function(root, mq))
-        {
-            yes++;
-        }
-        else
-        {
-            no++;
-        }
-    }
-    if (yes >= no)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    // vvs DATA;
+    // attr_vals.clear();
+    // for (int j = 0; j < m - 1; j++)
+    // {
+    //     map<string, bool> mp;
+    //     for (int i = 1; i < n; i++)
+    //     {
+    //         if (!mp[DATA[i][j]])
+    //         {
+    //             mp[DATA[i][j]] = 1;
+    //             attr_vals[DATA[0][j]].push_back(DATA[i][j]);
+    //         }
+    //     }
+    // }
+    // node *root = new node();
+    // func(root, DATA);
+
+    // if (decision_function(root, mq))
+    // {
+    //     yes++;
+    // }
+    // else
+    // {
+    //     no++;
+    // }
+    // if (yes >= no)
+    // {
+    //     return 1;
+    // }
+    // else
+    // {
+    //     return 0;
+    // }
 }
