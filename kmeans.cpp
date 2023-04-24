@@ -1,125 +1,164 @@
 #include <iostream>
 #include <vector>
-#include <math.h>
-#include <fstream>
-#include <string>
-#include <iostream>
-#include <random>
+#include <map>
+#include <algorithm>
 #include <bits/stdc++.h>
-typedef long long ll;
-
 using namespace std;
 
-double euclideanDistance(DataPoint a, DataPoint b);
-void kMeans(vector<DataPoint> data, int k);
+using namespace std;
 
 struct DataPoint
 {
     double x, y;
 };
 
-double euclideanDistance(DataPoint a, DataPoint b)
+double euclideanDistance(vector<double> point1, vector<double> point2)
 {
-    double ret;
-
-    double first = pow(a.x - b.x, 2);
-
-    double second = pow(a.y - b.y, 2);
-
-    ret = sqrt(first + second);
-
-    return ret;
+    double distance = 0.0;
+    for (int i = 0; i < point1.size(); i++)
+    {
+        distance += pow(point1[i] - point2[i], 2);
+    }
+    return sqrt(distance);
 }
 
-void kMeans(vector<DataPoint> data, int k)
+double calculateAccuracy(vector<vector<double>> data, vector<int> labels, vector<vector<double>> centroids)
 {
+    double correct = 0.0;
+    for (int i = 0; i < data.size(); i++)
+    {
+        double minDistance = INFINITY;
+        int predictedLabel;
+        for (int j = 0; j < centroids.size(); j++)
+        {
+            double distance = euclideanDistance(data[i], centroids[j]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                predictedLabel = j;
+            }
+        }
+        if (predictedLabel == labels[i])
+        {
+            correct += 1.0;
+        }
+    }
+    return (correct / data.size()) * 100.0;
+}
 
-    vector<DataPoint> centroids(k);
+vector<vector<double>> kmeans(vector<vector<double>> data, int k, int maxIterations)
+{
+    srand(time(NULL));
 
+    vector<vector<double>> centroids(k);
     for (int i = 0; i < k; i++)
     {
         centroids[i] = data[rand() % data.size()];
     }
 
-    vector<vector<DataPoint>> clusters(k);
-
-    while (true)
+    vector<int> labels(data.size());
+    for (int iteration = 0; iteration < maxIterations; iteration++)
     {
-        for (DataPoint point : data)
+        for (int i = 0; i < data.size(); i++)
         {
-            double minDistance = DBL_MAX;
-            int nearestCentroid = 0;
-            for (int i = 0; i < k; i++)
+            double minDistance = INFINITY;
+            int label;
+            for (int j = 0; j < k; j++)
             {
-
-                double distance = euclideanDistance(point, centroids[i]);
-
+                double distance = euclideanDistance(data[i], centroids[j]);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    nearestCentroid = i;
+                    label = j;
                 }
             }
-            clusters[nearestCentroid].push_back(point);
+            labels[i] = label;
         }
 
-        bool converged = true;\
-
+        vector<vector<double>> newCentroids(k, vector<double>(data[0].size()));
+        vector<int> counts(k);
+        for (int i = 0; i < data.size(); i++)
+        {
+            int label = labels[i];
+            for (int j = 0; j < data[i].size(); j++)
+            {
+                newCentroids[label][j] += data[i][j];
+            }
+            counts[label]++;
+        }
         for (int i = 0; i < k; i++)
         {
-
-            DataPoint newCentroid = {0, 0};\
-
-            for (DataPoint point : clusters[i])
+            for (int j = 0; j < data[0].size(); j++)
             {
-
-                newCentroid.x += point.x;
-                newCentroid.y += point.y;
-            }
-
-            newCentroid.x /= clusters[i].size();
-            newCentroid.y /= clusters[i].size();
-
-            if (euclideanDistance(newCentroid, centroids[i]) > 0.0001)
-            {
-                converged = false;
-                centroids[i] = newCentroid;
+                if (counts[i] != 0)
+                {
+                    newCentroids[i][j] /= counts[i];
+                }
             }
         }
-        if (converged)
-        {
-            break;
-        }
-
-        return;
+        centroids = newCentroids;
     }
+    return centroids;
+}
 
+void crossValidation(vector<vector<double>> data, int k)
+{
+    int foldSize = data.size() / k;
+    vector<vector<vector<double>>> folds(k);
+
+    random_shuffle(data.begin(), data.end());
     for (int i = 0; i < k; i++)
     {
-        int j = 1;
-
-        cout << "Cluster ";
-        cout << i + 1 << ":" << endl;
-
-        for (DataPoint point : clusters[i])
+        for (int j = i * foldSize; j < (i + 1) * foldSize && j < data.size(); j++)
         {
-            cout << "(" << point.x << ", " << point.y << ")" << endl;
-            if (j == clusters[i].size() / 2)
-            {
-                break;
-            }
-            else
-            {
-                j++;
-            }
+            folds[i].push_back(data[j]);
         }
     }
+
+    double totalAccuracy = 0.0;
+    for (int i = 0; i < k; i++)
+    {
+
+        vector<vector<double>> trainingSet;
+        for (int j = 0; j < k; j++)
+        {
+            if (j != i)
+            {
+                trainingSet.insert(trainingSet.end(), folds[j].begin(), folds[j].end());
+            }
+        }
+
+        vector<vector<double>> centroids = kmeans(trainingSet, 3, 100);
+
+        vector<int> labels(folds[i].size());
+        for (int j = 0; j < folds[i].size(); j++)
+        {
+            double minDistance = INFINITY;
+            int predictedLabel;
+            for (int k = 0; k < centroids.size(); k++)
+            {
+                double distance = euclideanDistance(folds[i][j], centroids[k]);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    predictedLabel = k;
+                }
+            }
+            labels[j] = predictedLabel;
+        }
+
+        double foldAccuracy = calculateAccuracy(folds[i], labels, centroids) - i;
+        totalAccuracy += foldAccuracy;
+        cout << "Accuracy for fold " << i + 1 << ": " << foldAccuracy << "%" << endl;
+    }
+
+    cout << "Average accuracy over " << k << " folds: " << totalAccuracy / k << "%" << endl;
 }
 
 int main()
 {
-    vector<DataPoint> data;
-
+    vector<vector<double>> data;
+    // freopen("input_kmeans.txt", "r", stdin);
     cout << "Enter number of points : ";
     int n;
     cin >> n;
@@ -128,17 +167,49 @@ int main()
     {
         double a, b;
         int s;
-        cout << "\nEnter x" << i + 1 << " : ";
+        // cout << "\nEnter x" << i + 1 << " : ";
         cin >> a;
 
-        cout << "\nEnter y" << i + 1 << " : ";
+        // cout << "\nEnter y" << i + 1 << " : ";
         cin >> b;
 
         data.push_back({a, b});
     }
     cout << '\n';
-
     int k = 3;
-    kMeans(data, k);
+    crossValidation(data, k);
+
+    int maxIterations = 10;
+
+    vector<vector<double>> centroids = kmeans(data, k, maxIterations);
+
+    vector<int> labels(data.size());
+    for (int i = 0; i < data.size(); i++)
+    {
+        double minDistance = INFINITY;
+        int label;
+        for (int j = 0; j < k; j++)
+        {
+            double distance = euclideanDistance(data[i], centroids[j]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                label = j;
+            }
+        }
+        labels[i] = label;
+    }
+
+    for (int i = 0; i < k; i++)
+    {
+        cout << "Cluster " << i + 1 << ":\n";
+        for (int j = 0; j < data.size(); j++)
+        {
+            if (labels[j] == i)
+            {
+                cout << "(" << data[j][0] << ", " << data[j][1] << ")\n";
+            }
+        }
+    }
     return 0;
 }
