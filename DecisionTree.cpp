@@ -37,7 +37,39 @@ vector<ll> k1, k2;
 //     // cout << "K2" << '\n';
 //     // for( auto val : k2 ) cout << val << ' ';
 // }
+void k_folds_cross_validation(vvs DATA, int k) {
+    k = 15;
+    int folds = k;
+    int accuracy = 0;
+    while(k--) {
+    node *root = new node();
+    vvs DATA2;
 
+    func(root, DATA);
+    map<string, string> mq;
+    string expected = DATA[k][4];
+    cout << expected << ' ';
+    for (int j = 0; j < 4; j++)
+    {
+        // string s;
+        // cin >> s;
+        // cout << s << "  ";
+        mq[DATA[0][j]] = DATA[k][j];
+    }
+    string actual;
+    if (decision_function(root, mq)){
+        actual = "Yes";
+    }
+    else {
+        actual = "No";
+        folds--;
+    }
+    cout << actual << '\n';
+    if(actual == expected) accuracy++;
+    cout << accuracy << '\n';
+    }
+    cout << "Average Accuracy is : " << (accuracy*1.0/folds)*100 << "%" << '\n';
+}
 int main()
 {
     // cout << "Number of files: ";
@@ -53,7 +85,7 @@ int main()
 
     // int yes = 0;
     // int no = 0;
-
+    int k = 10;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
@@ -94,9 +126,9 @@ int main()
             }
         }
     }
-
-    node *root = new node();
-    func(root, DATA);
+    k_folds_cross_validation(DATA, k);
+    // node *root = new node();
+    // func(root, DATA);
     // int question;
     // cin >> question;
 
@@ -104,31 +136,32 @@ int main()
     // {
     // cout << "\n\nFor the following data : ";
 
-    for (int j = 0; j < m - 1; j++)
-    {
-        string s;
-        s = mq[DATA[0][j]];
-        // cout << s << "  ";
-        mq2[DATA[0][j]] = s;
-    }
+    // for (int j = 0; j < m - 1; j++)
+    // {
+    //     string s;
+    //     s = mq[DATA[0][j]];
+    //     // cout << s << "  ";
+    //     mq2[DATA[0][j]] = s;
+    // }
 
-    // cout << "\n\nMy decision is : ";
+    // // cout << "\n\nMy decision is : ";
 
-    if (decision_function(root, mq2))
-    {
-        yes++;
-    }
-    else
-    {
-        no++;
-    }
-    //}
-    if (yes > no)
-    {
-        cout << "Yes,I will play tennis\n";
-    }
-    else
-    {
-        cout << "No, I won't play tennis\n";
-    }
+    // if (decision_function(root, mq2))
+    // {
+    //     yes++;
+    // }
+    // else
+    // {
+    //     no++;
+    // }
+    // //}
+    // //cout << yes <<  ' ' << no << '\n';
+    // if (yes > no)
+    // {
+    //     cout << "Yes,I will play tennis\n";
+    // }
+    // else
+    // {
+    //     cout << "No, I won't play tennis\n";
+    // }
 }
