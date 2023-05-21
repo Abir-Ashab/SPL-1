@@ -109,7 +109,50 @@ void k_fold_cross_validation(Point arr[], int n, int k)
     accuracy /= k;
     cout << "Average accuracy over " << k << " folds is " << accuracy << endl;
 }
+void test_KNN() {
+	int n = 50;
+	Point arr[n];
 
+	ifstream file("knn.csv");
+    string line;
+    int i = 0;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string token;
+
+        getline(ss, token, ',');
+        arr[i].x = stod(token);
+
+        getline(ss, token, ',');
+        arr[i].y = stod(token);
+
+        getline(ss, token, ',');
+        arr[i].val = stoi(token);
+        i++;
+    }
+
+	Point p;
+	printf("\nEnter point which you want to check : \n");
+	cin >> p.x >> p.y;
+
+	int k = 3;
+	int m = KNN(arr, n, k, p);
+	string s1;
+	if(m == 1) s1 = "dog";
+	else s1 = "cat";
+    
+	cout << "When k = " << k  << " The value classified to unknown point is "
+	     << s1 << '\n';
+    
+	k = 5;
+	m = KNN(arr, n, k, p);
+
+	if(m == 1) s1 = "dog";
+	else s1 = "cat";
+
+    cout << "When k = " << k  << " The value classified to unknown point is "
+	     << s1 << '\n';
+}
 int knn_algo()
 {
     ios_base::sync_with_stdio(0);

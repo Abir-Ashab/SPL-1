@@ -159,7 +159,7 @@ int kmeans_algo()
 {
     vector<vector<double>> data;
     freopen("input_kmeans.txt", "r", stdin);
-    cout << "Enter number of points : ";
+    //cout << "Enter number of points : ";
     int n;
     cin >> n;
 
@@ -176,7 +176,7 @@ int kmeans_algo()
         data.push_back({a, b});
     }
     cout << '\n';
-    int k = 3;
+    int k = 8;
     crossValidation(data, k);
 
     int maxIterations = 10;
@@ -200,16 +200,16 @@ int kmeans_algo()
         labels[i] = label;
     }
 
-    // for (int i = 0; i < k; i++)
-    // {
-    //     cout << "Cluster " << i + 1 << ":\n";
-    //     for (int j = 0; j < data.size(); j++)
-    //     {
-    //         if (labels[j] == i)
-    //         {
-    //             cout << "(" << data[j][0] << ", " << data[j][1] << ")\n";
-    //         }
-    //     }
-    // }
+    for (int i = 0; i < k; i++)
+    {
+        cout << "\nCluster " << i + 1 << ":\n";
+        for (int j = 0; j < data.size(); j++)
+        {
+            if (labels[j] == i)
+            {
+                cout << "\t(" << data[j][0] << ", " << data[j][1] << ")\n";
+            }
+        }
+    }
     return 0;
 }

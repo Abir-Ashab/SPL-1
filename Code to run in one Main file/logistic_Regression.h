@@ -78,11 +78,7 @@ void calculateAccuracy()
     }
   }
 
-  cout << "Accuracy is: ";
-
-  cout << (totalCorrect * 100) / totalCases;
-
-  cout << "%" << '\n';
+  printf("Accuracy is: %f percent\n",100*(totalCorrect *1.0) / (totalCases*1.0));
 
   return;
 }
@@ -90,7 +86,7 @@ void calculateAccuracy()
 void test()
 {
   double z = 0;
-  cout << "Enter the values" << '\n';
+  printf("Enter the values[sepal length,sepal width,petal length,petal width] for predicting : \n");
   for (int i = 0; i < 4; i++)
   {
     double temp;
@@ -103,11 +99,11 @@ void test()
 
   if (predictedValue < 0.5)
   {
-    cout << "Not a Iris flower\n" << '\n';
+    cout << "Not a Iris setosa flower\n" << '\n';
   }
   else
   {
-    cout << "Iris flower\n" << '\n';
+    cout << "This is Iris setosa flower\n" << '\n';
   }
 
   return;
@@ -123,7 +119,6 @@ int logistic_Regression()
   string line;
   ll i;
   ll j; 
-  cout << "shei\n";
   ifstream infile;
   infile.open("IrisFlower.csv");
 
@@ -171,7 +166,7 @@ int logistic_Regression()
 
     input.push_back(inputRow);
   }
-  cout << "input shesh\n";
+  //cout << "input shesh\n";
   // check values for proper input into vectors
 
   // for(j = 0; j < input.size(); j++) {
@@ -200,7 +195,7 @@ int logistic_Regression()
 
   calculateAccuracy();
 
-  //test();
+  test();
 
   return 0;
 }

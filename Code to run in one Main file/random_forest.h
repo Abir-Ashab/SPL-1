@@ -101,36 +101,141 @@ void k_folds_cross_validation(vvs DATA, int f)
     }
     cout << "Accuracy is : " << (1.0 * accuracy / (folds * 1.0)) * 100 << "%" << '\n';
 }
-int random_forest()
+void test_random()
 {
-    // cout << "Number of files: ";
-    // int k, i, index = 0;
-    // cin >> k;
-    freopen("decision_random.txt", "r", stdin);
-    ll n, m;
-    cin >> n >> m;
+    ll n = 15, m = 5;
     vvs DATA(n);
 
     RandomGenerator(n);
     RandomGenerator2(n / 2);
 
-    for (int i = 0; i < n; i++)
+    ifstream file("decision_random.csv");
+    string line;
+    int i = 0;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string token;
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        i++;
+    }
+    printf("\nEnter the values [Outlook,Temperature,Humidity,Wind] for predicting.\n\n");
+    printf("\tFor Outlook type one of them  [Sunny, Overcast, Rain]\n");
+    printf("\tFor Temparature type one of them [Hot, Mild, Cool]\n");
+    printf("\tFor Humidity type one of them [High, Normal]\n");
+    printf("\tFor Wind type one of them [Strong, Weak]\n");
+    for (int j = 0; j < m - 1; j++)
     {
-        for (int j = 0; j < m; j++)
+        string s;
+        cin >> s;
+        mq[DATA[0][j]] = s;
+    }
+    for (int j = 0; j < m - 1; j++)
+    {
+        map<string, bool> mp;
+        for (int i = 1; i < n; i++)
         {
-            string s;
-            cin >> s;
-            DATA[i].push_back(s);
+            if (!mp[DATA[i][j]])
+            {
+                mp[DATA[i][j]] = 1;
+                attr_vals[DATA[0][j]].push_back(DATA[i][j]);
+            }
         }
     }
+
     map<string, string> mq, mq2;
-    // for (int j = 0; j < m - 1; j++)
-    // {
-    //     string s;
-    //     cin >> s;
-    //     mq[DATA[0][j]] = s;
-    // }
-    // kon class e unique attr koyta o ki..for example..outlook = {sunny,rain,overcast}
+    int yes = 0;
+    int no = 0;
+    for (int k = 0; k < 5; ++k)
+    {
+        vvs DATA2;
+        for (int i = 0; i < k1[k]; i++)
+        {
+            for (int j = k2[k]; j < m; j++)
+            {
+                DATA2.push_back(DATA[j]);
+            }
+        }
+
+        node *root = new node();
+        func(root, DATA2);
+
+        for (int j = 0; j < m - 1; j++)
+        {
+            string s;
+            s = mq[DATA2[0][j]];
+            mq2[DATA2[0][j]] = s;
+        }
+
+        if (decision_function(root, mq2))
+        {
+            yes++;
+        }
+        else
+        {
+            no++;
+        }
+    }
+    if (yes >= no)
+    {
+        cout << "Yes, I will play tennis\n";
+    }
+    else
+    {
+        cout << "No, I won't play tennis\n";
+    }
+}
+
+void random_forest()
+{
+    // cout << "Number of files: ";
+    // int k, i, index = 0;
+    // cin >> k;
+    //freopen("decision_random.txt", "r", stdin);
+    ll n = 15, m = 5;
+    vvs DATA(n);
+
+    RandomGenerator(n);
+    RandomGenerator2(n / 2);
+
+    ifstream file("decision_random.csv");
+    string line;
+    int i = 0;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string token;
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        i++;
+    }
     for (int j = 0; j < m - 1; j++)
     {
         map<string, bool> mp;
@@ -150,6 +255,7 @@ int random_forest()
     while (f > 0)
     {
         f--;
+        map<string, string> mq, mq2;
         int yes = 0;
         int no = 0;
         for (int j = 0; j < 4; j++)
@@ -166,9 +272,9 @@ int random_forest()
                 for (int j = k2[k]; j < m; j++)
                 {
                     DATA2.push_back(DATA[j]);
-                    cout << DATA[i][j] << "       ";
+                    // cout << DATA[i][j] << "       ";
                 }
-                cout << '\n';
+                // cout << '\n';
             }
             // initial attr_vals;
 
@@ -200,7 +306,6 @@ int random_forest()
                 no++;
             }
         }
-        cout << "YES = " << yes << "  NO = " << no << '\n';
         if (yes >= no)
         {
             actual = "Yes";
@@ -212,5 +317,5 @@ int random_forest()
         if (actual == expected)
             accuracy++;
     }
-    cout << "Accuracy is : " << (1.0 * accuracy / (folds * 1.0)) * 100 << "%" << '\n';
+    printf("Accuracy is : %f percant \n",(1.0 * accuracy / (folds * 1.0)) * 100) ;
 }

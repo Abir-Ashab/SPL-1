@@ -7,17 +7,22 @@
 using namespace std;
 typedef long long ll;
 
-void k_folds_for_decision_tree(vvs info, int k);
-
 int main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
+    printf("type the name without '[]' : \n");
+    printf("\t[knn] for KNN algorithm\n");
+    printf("\t[kmeans] for kmeans algorithm \n");
+    printf("\t[logistic] for logistic regression algorithm \n");
+    printf("\t[random] for random forest algorithm \n");
+    printf("\t[decision] for decision tree algorithm \n");
     string s;
     cin >> s;
     if (s == "knn")
     {
         knn_algo();
+        test_KNN();
     }
     else if (s == "kmeans")
     {
@@ -30,75 +35,11 @@ int main()
     else if (s == "random")
     {
         random_forest();
+        test_random();
     }
     else if (s == "decision")
     {
-        freopen("decision_random.txt", "r", stdin);
-        long long n, m;
-        cin >> n >> m;
-        vvs info(n);
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < m; j++)
-            {
-                string s;
-                cin >> s;
-                info[i].push_back(s);
-            }
-        }
-        map<string, string> mq, mq2;
-
-        for (int j = 0; j < m - 1; j++)
-        {
-            map<string, bool> mp;
-            for (int i = 1; i < n; i++)
-            {
-                if (!mp[info[i][j]])
-                {
-                    mp[info[i][j]] = 1;
-                    attr_vals[info[0][j]].push_back(info[i][j]);
-                }
-            }
-        }
-        int k = 5;
-        k_folds_for_decision_tree(info, k);
+        DecisionTree();
+        test_decision();
     }
-    return 0;
-}
-
-void k_folds_for_decision_tree(vvs info, int k)
-{
-    int folds = k;
-    int accuracy = 0;
-    k++;
-    while (k > 0)
-    {
-        k--;
-        node *root = new node();
-        vvs info2;
-
-        func(root, info);
-        map<string, string> mq;
-        string expected = info[k][4];
-        for (int j = 0; j < 4; j++)
-        {
-            // string s;
-            // cin >> s;
-            // cout << s << "  ";
-            mq[info[0][j]] = info[k][j];
-        }
-        string actual;
-        if (decision_function(root, mq))
-        {
-            actual = "Yes";
-        }
-        else
-        {
-            actual = "No";
-            folds--;
-        }
-        if (actual == expected)
-            accuracy++;
-    }
-    cout << "Average Accuracy is : " << (accuracy * 1.0 / folds) * 100 << "%" << '\n';
 }

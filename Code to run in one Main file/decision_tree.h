@@ -21,6 +21,7 @@ map<string, string> mq;
 double entropy(double pos, double neg);
 double gain(vector<pair<int, int>> v, int sum_pos, int sum_neg);
 pair<int, int> pure(vvs table, string attr, string value);
+void k_folds_for_decision_tree(vvs info, int k);
 
 struct node
 {
@@ -250,111 +251,177 @@ int decision_function(node *n, map<string, string> mq)
     }
     decision_function(n->child[val], mq);
 }
+void test_decision()
+{
+    ll n = 15, m = 5;
+    vvs DATA(n);
 
-int DecisionTree2()
+    ifstream file("decision_random.csv");
+    string line;
+    int i = 0;
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        string token;
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        getline(ss, token, ',');
+        DATA[i].push_back(token);
+
+        i++;
+    }
+    printf("\nEnter the values [Outlook,Temperature,Humidity,Wind] for predicting.\n\n");
+    printf("\tFor Outlook type one of them  [Sunny, Overcast, Rain]\n");
+    printf("\tFor Temparature type one of them [Hot, Mild, Cool]\n");
+    printf("\tFor Humidity type one of them [High, Normal]\n");
+    printf("\tFor Wind type one of them [Strong, Weak]\n");
+    for (int j = 0; j < m - 1; j++)
+    {
+        string s;
+        cin >> s;
+        mq[DATA[0][j]] = s;
+    }
+    for (int j = 0; j < m - 1; j++)
+    {
+        map<string, bool> mp;
+        for (int i = 1; i < n; i++)
+        {
+            if (!mp[DATA[i][j]])
+            {
+                mp[DATA[i][j]] = 1;
+                attr_vals[DATA[0][j]].push_back(DATA[i][j]);
+            }
+        }
+    }
+
+    map<string, string> mq, mq2;
+    int yes = 0;
+    int no = 0;
+
+    node *root = new node();
+    func(root, DATA);
+
+    for (int j = 0; j < m - 1; j++)
+    {
+        string s;
+        s = mq[DATA[0][j]];
+        mq2[DATA[0][j]] = s;
+    }
+
+    if (decision_function(root, mq2))
+    {
+        yes++;
+    }
+    else
+    {
+        no++;
+    }
+    if (yes > no)
+    {
+        cout << "Yes, I will play tennis\n";
+    }
+    else
+    {
+        cout << "No, I won't play tennis\n";
+    }
+}
+void DecisionTree()
 {
 
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
 
-    // cout << "attributes are : " << '\n';
+    long long n = 15, m = 5;
+    vvs info(n);
 
-    // cout << "Outlook"
-    //      << "  Temperature"
-    //      << "  Humidity"
-    //      << "  Wind"
-    //      << " Play Tennis\n";
-    // vvs DATA(15);
-    // n, m;
-    // cin >> n;
-    // cin >> m;
-
-    // for (int i = 0; i < n; i++)
-    // {
-    //     for (int j = 0; j < m; j++)
-    //     {
-    //         string s;
-    //         cin >> s;
-    //         DATA[i].push_back(s);
-    //     }
-    // }
-
-    for (int i = 0; i < n; i++)
+    ifstream file("decision_random.csv");
+    string line;
+    int i = 0;
+    while (getline(file, line))
     {
-        for (int j = 0; j < m; j++)
-        {
-            cout << DATA[i][j] << "       ";
-        }
-        cout << '\n';
+        stringstream ss(line);
+        string token;
+
+        getline(ss, token, ',');
+        info[i].push_back(token);
+
+        getline(ss, token, ',');
+        info[i].push_back(token);
+
+        getline(ss, token, ',');
+        info[i].push_back(token);
+
+        getline(ss, token, ',');
+        info[i].push_back(token);
+
+        getline(ss, token, ',');
+        info[i].push_back(token);
+
+        i++;
     }
-    /// initial attr_vals;
-    // for (int j = 0; j < m - 1; j++)
-    // {
-    //     map<string, bool> mp;
-    //     for (int i = 1; i < n; i++)
-    //     {
-    //         if (!mp[DATA[i][j]])
-    //         {
-    //             mp[DATA[i][j]] = 1;
-    //             attr_vals[DATA[0][j]].push_back(DATA[i][j]);
-    //         }
-    //     }
-    // }
+    map<string, string> mq, mq2;
 
-    // node *root = new node();
-    // func(root, DATA);
-    // int question;
-    // cin >> question;
+    for (int j = 0; j < m - 1; j++)
+    {
+        map<string, bool> mp;
+        for (int i = 1; i < n; i++)
+        {
+            if (!mp[info[i][j]])
+            {
+                mp[info[i][j]] = 1;
+                attr_vals[info[0][j]].push_back(info[i][j]);
+            }
+        }
+    }
+    int k = 5;
+    k_folds_for_decision_tree(info, k);
+}
 
-    // for (int i = 0; i < question; i++)
-    // {
-    //     cout << "\n\nFor the following data : ";
-    //     map<string, string> mq;
-    //     for (int j = 0; j < m - 1; j++)
-    //     {
-    //         string s;
-    //         cin >> s;
-    //         // cout << s << "  ";
-    //         mq[DATA[0][j]] = s;
-    //     }
-    //     // cout << "\n\nMy decision is : ";
-    //     if (decision_function(root, mq))
-    //         return 1;
-    //     return 0;
-    // }
+void k_folds_for_decision_tree(vvs info, int k)
+{
+    int folds = k;
+    int accuracy = 0;
+    k++;
+    while (k > 0)
+    {
+        k--;
+        node *root = new node();
+        vvs info2;
 
-    // vvs DATA;
-    // attr_vals.clear();
-    // for (int j = 0; j < m - 1; j++)
-    // {
-    //     map<string, bool> mp;
-    //     for (int i = 1; i < n; i++)
-    //     {
-    //         if (!mp[DATA[i][j]])
-    //         {
-    //             mp[DATA[i][j]] = 1;
-    //             attr_vals[DATA[0][j]].push_back(DATA[i][j]);
-    //         }
-    //     }
-    // }
-    // node *root = new node();
-    // func(root, DATA);
-
-    // if (decision_function(root, mq))
-    // {
-    //     yes++;
-    // }
-    // else
-    // {
-    //     no++;
-    // }
-    // if (yes >= no)
-    // {
-    //     return 1;
-    // }
-    // else
-    // {
-    //     return 0;
-    // }
+        func(root, info);
+        map<string, string> mq;
+        string expected = info[k][4];
+        for (int j = 0; j < 4; j++)
+        {
+            // string s;
+            // cin >> s;
+            // cout << s << "  ";
+            mq[info[0][j]] = info[k][j];
+        }
+        string actual;
+        if (decision_function(root, mq))
+        {
+            actual = "Yes";
+        }
+        else
+        {
+            actual = "No";
+            folds--;
+        }
+        if (actual == expected)
+            accuracy++;
+    }
+    printf("Average Accuracy is : %f percant \n", 100*(accuracy * 1.0 / folds));
 }
