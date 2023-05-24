@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 #include <random>
+#include <windows.h>
+#include <direct.h>
 #include <bits/stdc++.h>
 typedef long long ll;
 
@@ -23,6 +25,19 @@ void updateWeight(double predicted, double expected, vector<double> inputs);
 void calculateAccuracy();
 void test();
 
+void setcolor4(int ForgC)
+{
+    WORD wColor;
+
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+    return;
+}
 double sigmoid(double z)
 {
   double ret;
@@ -77,7 +92,7 @@ void calculateAccuracy()
       totalCorrect++;
     }
   }
-
+  setcolor4(10);
   printf("Accuracy is: %f percent\n",100*(totalCorrect *1.0) / (totalCases*1.0));
 
   return;
@@ -86,6 +101,7 @@ void calculateAccuracy()
 void test()
 {
   double z = 0;
+  setcolor4(7);
   printf("Enter the values[sepal length,sepal width,petal length,petal width] for predicting : \n");
   for (int i = 0; i < 4; i++)
   {

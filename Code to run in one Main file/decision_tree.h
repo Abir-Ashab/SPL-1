@@ -3,6 +3,9 @@
 #include <map>
 #include <algorithm>
 #include <bits/stdc++.h>
+#include <windows.h>
+#include <direct.h>
+
 using namespace std;
 
 typedef long long ll;
@@ -31,6 +34,24 @@ struct node
     map<string, bool> isleaf;
 };
 
+static int x = 1;
+
+using namespace std;
+
+void setcolor2(int ForgC)
+{
+    WORD wColor;
+
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+    return;
+}
+
 double entropy(double pos, double neg)
 {
     if (pos == 0)
@@ -57,7 +78,6 @@ double gain(vector<pair<int, int>> v, int sum_pos, int sum_neg)
         int neg = v[i].second;
         sum_entropy += entropy(pos, neg) * ((pos + neg) / ((double)(sum_pos + sum_neg)));
     }
-    // cout<<"sume="<<sum_entropy<<'\n';
     return entropy(sum_pos, sum_neg) - sum_entropy;
 }
 
@@ -281,11 +301,13 @@ void test_decision()
 
         i++;
     }
-    printf("\nEnter the values [Outlook,Temperature,Humidity,Wind] for predicting.\n\n");
-    printf("\tFor Outlook type one of them  [Sunny, Overcast, Rain]\n");
-    printf("\tFor Temparature type one of them [Hot, Mild, Cool]\n");
-    printf("\tFor Humidity type one of them [High, Normal]\n");
-    printf("\tFor Wind type one of them [Strong, Weak]\n");
+    setcolor2(6);
+    printf("\nEnter the values of [Outlook,Temperature,Humidity,Wind] for predicting.\n\nwhere :\n");
+    setcolor2(11);
+    printf("\t Outlook = {Sunny, Overcast, Rain}\n");
+    printf("\t Temparature = {Hot, Mild, Cool}\n");
+    printf("\t Humidity = {High, Normal}\n");
+    printf("\t Wind = {Strong, Weak}\n");
     for (int j = 0; j < m - 1; j++)
     {
         string s;
@@ -423,5 +445,6 @@ void k_folds_for_decision_tree(vvs info, int k)
         if (actual == expected)
             accuracy++;
     }
+    setcolor2(10);
     printf("Average Accuracy is : %f percant \n", 100*(accuracy * 1.0 / folds));
 }

@@ -3,6 +3,8 @@
 #include <map>
 #include <algorithm>
 #include <bits/stdc++.h>
+#include <windows.h>
+#include <direct.h>
 using namespace std;
 
 using namespace std;
@@ -11,7 +13,19 @@ struct DataPoint
 {
     double x, y;
 };
+void setcolor3(int ForgC)
+{
+    WORD wColor;
 
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+    return;
+}
 double euclideanDistance(vector<double> point1, vector<double> point2)
 {
     double distance = 0.0;
@@ -149,9 +163,10 @@ void crossValidation(vector<vector<double>> data, int k)
 
         double foldAccuracy = calculateAccuracy(folds[i], labels, centroids) - i;
         totalAccuracy += foldAccuracy;
+        setcolor3(7);
         cout << "Accuracy for fold " << i + 1 << ": " << foldAccuracy << "%" << endl;
     }
-
+    setcolor3(10);
     cout << "Average accuracy over " << k << " folds: " << totalAccuracy / k << "%" << endl;
 }
 
@@ -159,7 +174,7 @@ int kmeans_algo()
 {
     vector<vector<double>> data;
     freopen("input_kmeans.txt", "r", stdin);
-    //cout << "Enter number of points : ";
+    // cout << "Enter number of points : ";
     int n;
     cin >> n;
 
@@ -199,12 +214,12 @@ int kmeans_algo()
         }
         labels[i] = label;
     }
-
     for (int i = 0; i < k; i++)
     {
-        cout << "\nCluster " << i + 1 << ":\n";
+        cout << "\nCluster " << i + 1 << ":\n\n";
         for (int j = 0; j < data.size(); j++)
         {
+            setcolor3(11);
             if (labels[j] == i)
             {
                 cout << "\t(" << data[j][0] << ", " << data[j][1] << ")\n";

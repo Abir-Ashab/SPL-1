@@ -7,6 +7,8 @@
 #include <iostream>
 #include <random>
 #include <bits/stdc++.h>
+#include <windows.h>
+#include <direct.h>
 using namespace std;
 typedef long long ll;
 
@@ -14,7 +16,21 @@ random_device rd;
 mt19937 gen(rd());
 
 vector<ll> k1, k2;
+using namespace std;
 
+void setcolor1(int ForgC)
+{
+    WORD wColor;
+
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+    return;
+}
 void RandomGenerator(int N)
 {
     k1.push_back(N);
@@ -99,6 +115,7 @@ void k_folds_cross_validation(vvs DATA, int f)
             accuracy++;
         cout << accuracy << ' ';
     }
+    setcolor1(10);
     cout << "Accuracy is : " << (1.0 * accuracy / (folds * 1.0)) * 100 << "%" << '\n';
 }
 void test_random()
@@ -133,11 +150,13 @@ void test_random()
 
         i++;
     }
-    printf("\nEnter the values [Outlook,Temperature,Humidity,Wind] for predicting.\n\n");
-    printf("\tFor Outlook type one of them  [Sunny, Overcast, Rain]\n");
-    printf("\tFor Temparature type one of them [Hot, Mild, Cool]\n");
-    printf("\tFor Humidity type one of them [High, Normal]\n");
-    printf("\tFor Wind type one of them [Strong, Weak]\n");
+    setcolor1(6);
+    printf("\nEnter the values of [Outlook,Temperature,Humidity,Wind] for predicting.\n\nwhere :\n");
+    setcolor1(11);
+    printf("\t Outlook = {Sunny, Overcast, Rain}\n");
+    printf("\t Temparature = {Hot, Mild, Cool}\n");
+    printf("\t Humidity = {High, Normal}\n");
+    printf("\t Wind = {Strong, Weak}\n");
     for (int j = 0; j < m - 1; j++)
     {
         string s;
@@ -317,5 +336,6 @@ void random_forest()
         if (actual == expected)
             accuracy++;
     }
+    setcolor1(10);
     printf("Accuracy is : %f percant \n",(1.0 * accuracy / (folds * 1.0)) * 100) ;
 }

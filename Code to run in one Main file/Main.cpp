@@ -3,6 +3,8 @@
 #include "kmeans_algo.h"
 #include "knn_algo.h"
 #include "logistic_Regression.h"
+#include <windows.h>
+#include <direct.h>
 
 using namespace std;
 typedef long long ll;
@@ -11,12 +13,29 @@ int main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
-    printf("type the name without '[]' : \n");
-    printf("\t[knn] for KNN algorithm\n");
-    printf("\t[kmeans] for kmeans algorithm \n");
-    printf("\t[logistic] for logistic regression algorithm \n");
-    printf("\t[random] for random forest algorithm \n");
-    printf("\t[decision] for decision tree algorithm \n");
+    setcolor1(6);
+    printf("\tkmeans ");
+    setcolor1(7);
+    printf("for k-means algorithm\n") ;
+    setcolor1(6);
+    printf("\tknn ");
+    setcolor1(7);
+    printf("for KNN algorithm\n") ;
+    setcolor1(6);
+    printf("\tlogistic ");
+    setcolor1(7);
+    printf("for logistic regression algorithm\n") ;
+    setcolor1(6);
+    printf("\trandom ");
+    setcolor1(7);
+    printf("for random forest algorithm\n") ;
+    setcolor1(6);
+    printf("\tdecision ");
+    setcolor1(7);
+    printf("for decision tree algorithm\n") ;
+    //setcolor3(11);
+    setcolor1(9);
+    printf("\ttype the name : ");
     string s;
     cin >> s;
     if (s == "knn")

@@ -6,6 +6,8 @@
 #include <iostream>
 #include <random>
 #include <bits/stdc++.h>
+#include <windows.h>
+#include <direct.h>
 typedef long long ll;
 
 using namespace std;
@@ -16,7 +18,19 @@ struct Point
     double x, y;
     double distance;
 };
+void setcolor5(int ForgC)
+{
+    WORD wColor;
 
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+    return;
+}
 void Sort(Point arr[], int n)
 {
     int i, j;
@@ -110,6 +124,7 @@ void k_fold_cross_validation(Point arr[], int n, int k)
     cout << "Average accuracy over " << k << " folds is " << accuracy << endl;
 }
 void test_KNN() {
+    setcolor5(7);
 	int n = 50;
 	Point arr[n];
 
@@ -140,18 +155,19 @@ void test_KNN() {
 	string s1;
 	if(m == 1) s1 = "dog";
 	else s1 = "cat";
-    
-	cout << "When k = " << k  << " The value classified to unknown point is "
-	     << s1 << '\n';
-    
+	cout << "When k = " << k  << " The value classified to unknown point is ";
+    setcolor5(11);
+	cout << s1 << '\n';
+    setcolor5(7);
 	k = 5;
 	m = KNN(arr, n, k, p);
 
 	if(m == 1) s1 = "dog";
 	else s1 = "cat";
 
-    cout << "When k = " << k  << " The value classified to unknown point is "
-	     << s1 << '\n';
+    cout << "When k = " << k  << " The value classified to unknown point is ";
+    setcolor5(11);
+	cout << s1 << '\n';
 }
 int knn_algo()
 {
@@ -165,6 +181,7 @@ int knn_algo()
     ifstream file("knn.csv");
     string line;
     int i = 0;
+    
     while (getline(file, line)) {
         stringstream ss(line);
         string token;
@@ -230,13 +247,14 @@ int knn_algo()
             if (predicted_label == p.val)
                 correct++;
         }
-
+        setcolor5(7);
         double accuracy = (double) correct / fold_size;
-        cout << "Accuracy is " << fold+1 << ": " << accuracy * 100 << "%" << endl;
+        cout << "Accuracy in fold " << fold+1 << ": " << accuracy * 100 << "%" << endl;
         accuracy_sum += accuracy;
     }
 
     double overall_accuracy = accuracy_sum / num_folds;
+    setcolor5(10);
     cout << "Overall accuracy: " << overall_accuracy* 100 << "%" << endl;
 
     return 0;
